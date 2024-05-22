@@ -9,9 +9,9 @@ module.exports = function (app) {
   app.route('/api/check')
     .post((req, res) => {
       let coords = req.body.coordinate;
-      let value = Number(req.body.value);
+      let value = req.body.value;
       let str = req.body.puzzle;
-      if (!str || str.length == 0 || !coords || !value) {
+      if (!str || str.length == 0 || !coords || !req.body.value) {
         return res.json({ error: 'Required field(s) missing' })
       } 
       let regex = /^[1-9\.]+$/g;
@@ -21,7 +21,9 @@ module.exports = function (app) {
       if (str.length != 81) {
         return res.json({ error: 'Expected puzzle to be 81 characters long' })
       }
-      if (value < 1 || value > 9) {
+      value = Number(value);
+      console.log(value);
+      if (value < 1 || value > 9 || !value) {
         return res.json({error: 'Invalid value'})
       }
       if (coords.length != 2) {
