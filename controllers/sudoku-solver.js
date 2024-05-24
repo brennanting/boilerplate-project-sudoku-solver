@@ -17,14 +17,20 @@ class SudokuSolver {
   }
 
   validate(puzzleString) {
-    if (
-      !puzzleString ||
-      puzzleString.length == 0 ||
-      !/^[1-9\.]+$/g.test(puzzleString) ||
-      puzzleString.length != 81
-    ) {
-      return false;
+    if (!puzzleString || puzzleString.length == 0) {
+      return { valid: false, error: "Required field missing" };
     }
+    let regex = /^[1-9\.]+$/g;
+    if (!regex.test(puzzleString)) {
+      return { valid: false, error: "Invalid characters in puzzle" };
+    }
+    if (puzzleString.length != 81) {
+      return {
+        valid: false,
+        error: "Expected puzzle to be 81 characters long",
+      };
+    }
+
     let arrToCheck = this.arrConverter(puzzleString);
     for (let i = 0; i < arrToCheck.length; i++) {
       if (arrToCheck[i] == ".") {
@@ -34,9 +40,9 @@ class SudokuSolver {
         let row = coords.row;
         let column = coords.column;
         if (this.checkNumArr(arrToCheck, row, column, arrToCheck[i])) {
-          return true;
+          return { valid: true };
         } else {
-          return false;
+          return { valid: false, error: "Puzzle cannot be solved" };
         }
       }
       // check rows
@@ -145,13 +151,13 @@ class SudokuSolver {
 
   solve(puzzleString) {
     // validate
-    if (!this.validate(puzzleString)) {
+    if (!this.validate(puzzleString).valid) {
       return false;
     } else {
       const puzzArr = this.arrConverter(puzzleString);
       let result = this.arrSolver(puzzArr);
       if (result) {
-        return result.join("") ;
+        return result.join("");
       } else {
         return false;
       }
@@ -194,7 +200,7 @@ class SudokuSolver {
         }
       }
     }
-    return({ index, moves });
+    return { index, moves };
   }
 
   arrSolver(puzzArr) {
