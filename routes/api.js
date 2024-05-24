@@ -9,7 +9,7 @@ module.exports = function (app) {
     let coords = req.body.coordinate;
     let value = req.body.value;
     let str = req.body.puzzle;
-    if (!coords || !value) {
+    if (!coords || !value || !str) {
       return res.json({ error: "Required field(s) missing" });
     }
     let validateresult = solver.validate(str);
